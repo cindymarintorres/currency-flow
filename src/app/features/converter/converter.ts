@@ -9,7 +9,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 
 import { ExchangeRateService } from '../../core/services/exchange-rate.service';
-//import { HistoryService } from '../../core/services/history.service';
+import { HistoryService } from '../../core/services/history.service';
 //import { FavoritesService } from '../../core/services/favorites.service';
 import { Currency } from '../../core/models/currency.model';
 import { CURRENCIES } from '../../core/data/currencies.data';
@@ -35,6 +35,7 @@ import { TimeAgoPipe } from '../../shared/pipes/time-ago.pipe';
   styleUrl: './converter.scss',
 })
 export class ConverterComponent implements OnInit {
+  private historyService = inject(HistoryService);
   private exchangeRateService = inject(ExchangeRateService);
   private messageService = inject(MessageService);
 
@@ -105,7 +106,18 @@ export class ConverterComponent implements OnInit {
     this.convert();
   }
 
+  // Actualiza saveToHistory():
   saveToHistory(): void {
+    if (!this.convertedResult() || !this.currentRate()) return;
+
+    this.historyService.add({
+      fromCurrency: this.fromCurrency.value,
+      toCurrency: this.toCurrency.value,
+      amount: this.amount.value,
+      result: this.convertedResult()!,
+      rate: this.currentRate()!,
+    });
+
     this.messageService.add({
       severity: 'success',
       summary: 'Guardado',
