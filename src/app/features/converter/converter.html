@@ -1,0 +1,125 @@
+<p-toast />
+
+<div class="converter-page">
+  <!-- Hero -->
+  <div class="hero">
+    <h1>Real-time Currency Conversion</h1>
+    <p>Stay ahead of market trends with instant exchange rates and historical data.</p>
+  </div>
+
+  <div class="converter-layout">
+    <!-- Left: Form -->
+    <div class="converter-card">
+      <!-- From / To selectors -->
+      <div class="currency-selectors">
+        <div class="selector-group">
+          <label>From</label>
+          <p-select
+            [formControl]="form.controls['fromCurrency']"
+            [options]="currencies"
+            optionLabel="name"
+            optionValue="code"
+            [filter]="true"
+            filterPlaceholder="Search..."
+            class="currency-select"
+          >
+            <ng-template #selectedItem let-item>
+              <span>{{ item.flag }} {{ item.code }} - {{ item.name }}</span>
+            </ng-template>
+            <ng-template #item let-item>
+              <span>{{ item.flag }} {{ item.code }} - {{ item.name }}</span>
+            </ng-template>
+          </p-select>
+        </div>
+
+        <button class="swap-btn" (click)="swap()" title="Swap currencies">⇄</button>
+
+        <div class="selector-group">
+          <label>To</label>
+          <p-select
+            [formControl]="form.controls['toCurrency']"
+            [options]="currencies"
+            optionLabel="name"
+            optionValue="code"
+            [filter]="true"
+            filterPlaceholder="Search..."
+            class="currency-select"
+          >
+            <ng-template #selectedItem let-item>
+              <span>{{ item.flag }} {{ item.code }} - {{ item.name }}</span>
+            </ng-template>
+            <ng-template #item let-item>
+              <span>{{ item.flag }} {{ item.code }} - {{ item.name }}</span>
+            </ng-template>
+          </p-select>
+        </div>
+      </div>
+
+      <!-- Amount + Result -->
+      <div class="amount-row">
+        <div class="input-group">
+          <label>Amount</label>
+          <p-inputnumber
+            [formControl]="form.controls['amount']"
+            mode="decimal"
+            [minFractionDigits]="2"
+            [maxFractionDigits]="2"
+            (onInput)="convert()"
+            class="amount-input"
+          />
+        </div>
+
+        <div class="result-group">
+          <label>Converted Result</label>
+          @if (isLoading()) {
+            <p-skeleton height="3rem" />
+          } @else {
+            <!-- Resultado convertido — antes usabas | number -->
+            <div class="result-display">
+              = {{ convertedResult() | currencyFormat: toCurrency.value }}
+              <span class="result-currency">{{ toCurrency.value }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Rate info -->
+      <div class="rate-info">
+        @if (rateLabel()) {
+          <span class="rate-label">{{ rateLabel() }}</span>
+        }
+        @if (lastUpdated()) {
+          <span class="updated-label">Actualizado {{ lastUpdated() | timeAgo }}</span>
+        }
+      </div>
+
+      @if (errorMsg()) {
+        <div class="error-msg">⚠️ {{ errorMsg() }}</div>
+      }
+    </div>
+
+    <!-- Right: Market Insights -->
+    <div class="insights-card">
+      <div class="insights-header">
+        <span class="insights-title">MARKET INSIGHTS</span>
+        <span class="live-badge">● LIVE</span>
+      </div>
+      <h3>{{ form.get('toCurrency')?.value }}/{{ form.get('fromCurrency')?.value }} Last 24h</h3>
+      <p class="mock-change">+0.14% ▲</p>
+
+      <!-- Mock bar chart -->
+      <div class="mock-chart">
+        @for (bar of [40, 55, 45, 60, 70, 65, 80]; track $index) {
+          <div class="bar" [style.height.%]="bar"></div>
+        }
+      </div>
+
+      <p-button
+        label="View Detailed History"
+        [outlined]="true"
+        routerLink="/history"
+        class="w-full mt-3"
+      />
+    </div>
+  </div>
+</div>
