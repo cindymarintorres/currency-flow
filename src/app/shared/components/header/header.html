@@ -9,7 +9,7 @@
     @for (link of navLinks; track link.path) {
       <a
         [routerLink]="link.path"
-        routerLinkActive="active"
+        routerLinkActive="nav-active"
         class="nav-link flex items-center gap-1 px-4 py-2 text-sm font-medium text-gray-500 no-underline rounded-md transition-colors">
         @if (link.icon) {
           <i [class]="link.icon"></i>

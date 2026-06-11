@@ -1,18 +1,19 @@
 <p-toast />
 
 <div class="flex flex-col gap-8 px-6 py-10 max-w-6xl mx-auto">
-
   <!-- Hero -->
   <div class="text-center">
-    <h1 class="text-3xl font-bold text-gray-900">Real-time Currency Conversion</h1>
-    <p class="text-gray-500 mt-2">Stay ahead of market trends with instant exchange rates and historical data.</p>
+    <h1 class="text-3xl font-bold text-[#041f6c]">Real-time Currency Conversion</h1>
+    <p class="text-gray-500 mt-2">
+      Stay ahead of market trends with instant exchange rates and historical data.
+    </p>
   </div>
 
   <div class="flex flex-col lg:flex-row gap-6">
-
     <!-- Left: Form -->
-    <div class="flex-1 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col gap-6">
-
+    <div
+      class="flex-1 bg-white rounded-2xl shadow-sm border border-sky-500 p-6 flex flex-col gap-6"
+    >
       <!-- From / To selectors -->
       <div class="flex items-end gap-4">
         <div class="flex flex-col gap-1 flex-1">
@@ -24,7 +25,7 @@
             optionValue="code"
             [filter]="true"
             filterPlaceholder="Search..."
-            class="w-full"
+            class="w-full border-sky-500"
           >
             <ng-template #selectedItem let-item>
               <span>{{ item.flag }} {{ item.code }} - {{ item.name }}</span>
@@ -35,11 +36,26 @@
           </p-select>
         </div>
 
-        <button
-          (click)="swap()"
-          title="Swap currencies"
+        <!--<p-button
+          icon="pi pi-arrow-right-arrow-left"
+          (onClick)="swap()"
+          ariaLabel="Swap currencies"
+          [outlined]="true"
+          [rounded]="true"
           class="mb-1 w-10 h-10 rounded-full bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center text-lg transition-colors cursor-pointer border-0"
-        >⇄</button>
+        ></p-button> !-->
+
+        <p-button
+          icon="pi pi-arrow-right-arrow-left"
+          (onClick)="swap()"
+          ariaLabel="Swap currencies"
+          [rounded]="true"
+          [pt]="{
+            root: {
+              class: 'bg-[#faf8ff]! hover:bg-[#cfc8e0]! border-2 border-[#9bc9fc]! text-[#1f6095]!',
+            },
+          }"
+        />
 
         <div class="flex flex-col gap-1 flex-1">
           <label class="text-sm font-medium text-gray-500">To</label>
@@ -50,7 +66,7 @@
             optionValue="code"
             [filter]="true"
             filterPlaceholder="Search..."
-            class="w-full"
+            class="w-full border-sky-500"
           >
             <ng-template #selectedItem let-item>
               <span>{{ item.flag }} {{ item.code }} - {{ item.name }}</span>
@@ -72,7 +88,8 @@
             [minFractionDigits]="2"
             [maxFractionDigits]="2"
             (onInput)="convert()"
-            class="w-full"
+            class="w-full h-full"
+            inputStyleClass="border-sky-500!"
           />
         </div>
 
@@ -81,7 +98,9 @@
           @if (isLoading()) {
             <p-skeleton height="3rem" />
           } @else {
-            <div class="flex items-center gap-2 bg-blue-50 rounded-lg px-4 py-3 text-2xl font-bold text-gray-800">
+            <div
+              class="flex items-center gap-2 bg-[#e9e7ee] rounded-lg px-4 py-3 text-2xl font-bold text-[#041f6c]"
+            >
               = {{ convertedResult() | currencyFormat: toCurrency.value }}
               <span class="text-sm font-medium text-blue-500 ml-1">{{ toCurrency.value }}</span>
             </div>
@@ -100,7 +119,9 @@
       </div>
 
       @if (errorMsg()) {
-        <div class="text-red-500 text-sm bg-red-50 rounded-lg px-4 py-2 flex flex-row items-center gap-2">
+        <div
+          class="text-red-500 text-sm bg-red-50 rounded-lg px-4 py-2 flex flex-row items-center gap-2"
+        >
           <i class="pi pi-exclamation-triangle text-yellow text-xs"></i>
           <span>{{ errorMsg() }}</span>
         </div>
@@ -108,18 +129,35 @@
     </div>
 
     <!-- Right: Market Insights -->
-    <div class="w-full lg:w-72 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col gap-3">
+    <div
+      class="w-full lg:w-72 bg-white rounded-2xl shadow-sm border border-sky-500 p-6 flex flex-col gap-3"
+    >
       <div class="flex flex-row justify-between items-center">
-        <span class="text-xs font-semibold text-gray-400 tracking-widest uppercase">Market Insights</span>
-        <div class="text-xs font-medium text-green-500 flex flex-row gap-2 items-center">
-          <i class="pi pi-circle-on text-green-500 text-xs"></i> 
+        <span class="text-xs font-semibold text-gray-400 tracking-widest uppercase"
+          >Market Insights</span
+        >
+        <div class="text-xs font-semibold text-green-500 flex flex-row gap-2 items-center">
+          <span class="relative flex h-2 w-2">
+            <span
+              class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
+            ></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+          </span>
           <span>LIVE</span>
         </div>
       </div>
       <h3 class="text-base font-semibold text-gray-800">
         {{ form.get('toCurrency')?.value }}/{{ form.get('fromCurrency')?.value }} Last 24h
       </h3>
-      <p class="text-sm text-blue-500 font-medium flex flex-row items-center gap-2">+0.14% <i class="pi pi-sort-up-fill text-base"></i></p>
+      <!--<p class="text-sm text-blue-500 font-medium flex flex-row items-center gap-2">
+        +0.14% <i class="pi pi-sort-up-fill text-base"></i>
+      </p>!-->
+
+      <p class="text-sm font-medium flex flex-row items-center gap-2"
+   [class]="marketChange() >= 0 ? 'text-green-500' : 'text-red-500'">
+  {{ marketChange() >= 0 ? '+' : '' }}{{ marketChange() }}%
+  <i [class]="marketChange() >= 0 ? 'pi pi-sort-up-fill' : 'pi pi-sort-down-fill'" class="text-base"></i>
+</p>
 
       <!-- Mock bar chart -->
       <div class="flex items-end gap-1 h-20">
@@ -131,15 +169,16 @@
         }
       </div>
 
+      
+
       <p-button
         label="View Detailed History"
         variant="outlined"
-        severity="success"
-        [rounded]="true"
+        severity="info"
         routerLink="/history"
+        [fluid]="true"
         class="w-full mt-2"
       />
     </div>
-
   </div>
 </div>

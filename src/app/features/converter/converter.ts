@@ -13,7 +13,6 @@ import { HistoryService } from '../../core/services/history.service';
 //import { FavoritesService } from '../../core/services/favorites.service';
 import { Currency } from '../../core/models/currency.model';
 import { CURRENCIES } from '../../core/data/currencies.data';
-import { DecimalPipe } from '@angular/common';
 import { CurrencyFormatPipe } from '../../shared/pipes/currency-format.pipe';
 import { TimeAgoPipe } from '../../shared/pipes/time-ago.pipe';
 
@@ -64,6 +63,7 @@ export class Converter implements OnInit {
   convertedResult = signal<number | null>(null);
   currentRate = signal<number | null>(null);
   lastUpdated = signal<number | null>(null);
+  marketChange = signal<number>(0.14); // ← mock, luego viene de la API
 
   isLoading = this.exchangeRateService.isLoading;
   errorMsg = this.exchangeRateService.error;

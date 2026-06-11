@@ -6,15 +6,15 @@ import { AvatarModule } from 'primeng/avatar';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterLink, ButtonModule, AvatarModule],
+  imports: [RouterLink, RouterLinkActive, ButtonModule, AvatarModule],
   templateUrl: './header.html',
-  //styleUrl: './header.css',
+  styleUrl: './header.css',
 })
 export class Header {
   protected readonly navLinks = [
     { label: 'Converter', path: '/converter', icon: null },
     { label: 'History', path: '/history', icon: null },
     { label: 'Favorites', path: '/favorites', icon: null },
-    { label: 'Search', path: '/search', icon: 'pi pi-search' },
+    { label: 'Search', path: '/search', icon: null },
   ] as const;
 }

@@ -10,7 +10,7 @@ import { Footer } from './shared/components/footer/footer';
   template: `
     <div class="min-h-screen flex flex-col">
       <app-header />
-      <main class="flex-1 p-8">
+      <main class="flex-1 p-8 bg-linear-to-b from-[#ebfaff] to-[#faf8ff]">
         <router-outlet />
       </main>
       <app-footer />

@@ -1,24 +1,5 @@
-.nav-link {
-  position: relative;
-
-  &:hover {
-    color: var(--p-primary-color);
-  }
-
-  &.active {
-    color: var(--p-primary-color);
-    font-weight: 600;
-
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 60%;
-      height: 2px;
-      background-color: var(--p-primary-color);
-      border-radius: 1px;
-    }
-  }
+.nav-active {
+  color: #041f6c;
+  font-weight: 600;
+  text-decoration: underline;
 }
