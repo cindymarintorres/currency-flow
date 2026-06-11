@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
-@layer tailwind-base, primeng, tailwind-utilities;
+@use "tailwindcss"; //Tailwind v4 + Dart Sass moderno
 
-@import "tailwindcss";
+@layer tailwind-base, primeng, tailwind-utilities;
 
 // Tus estilos globales van aquí abajo
 * { box-sizing: border-box; }
