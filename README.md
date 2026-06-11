@@ -141,7 +141,7 @@ cd currency-flow
 ### 2️⃣ Instalar dependencias
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### 3️⃣ Configurar variables de entorno
