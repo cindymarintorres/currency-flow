@@ -1,19 +1,22 @@
 <p-toast />
 
-<div class="converter-page">
+<div class="flex flex-col gap-8 px-6 py-10 max-w-6xl mx-auto">
+
   <!-- Hero -->
-  <div class="hero">
-    <h1>Real-time Currency Conversion</h1>
-    <p>Stay ahead of market trends with instant exchange rates and historical data.</p>
+  <div class="text-center">
+    <h1 class="text-3xl font-bold text-gray-900">Real-time Currency Conversion</h1>
+    <p class="text-gray-500 mt-2">Stay ahead of market trends with instant exchange rates and historical data.</p>
   </div>
 
-  <div class="converter-layout">
+  <div class="flex flex-col lg:flex-row gap-6">
+
     <!-- Left: Form -->
-    <div class="converter-card">
+    <div class="flex-1 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col gap-6">
+
       <!-- From / To selectors -->
-      <div class="currency-selectors">
-        <div class="selector-group">
-          <label>From</label>
+      <div class="flex items-end gap-4">
+        <div class="flex flex-col gap-1 flex-1">
+          <label class="text-sm font-medium text-gray-500">From</label>
           <p-select
             [formControl]="form.controls['fromCurrency']"
             [options]="currencies"
@@ -21,7 +24,7 @@
             optionValue="code"
             [filter]="true"
             filterPlaceholder="Search..."
-            class="currency-select"
+            class="w-full"
           >
             <ng-template #selectedItem let-item>
               <span>{{ item.flag }} {{ item.code }} - {{ item.name }}</span>
@@ -32,10 +35,14 @@
           </p-select>
         </div>
 
-        <button class="swap-btn" (click)="swap()" title="Swap currencies">⇄</button>
+        <button
+          (click)="swap()"
+          title="Swap currencies"
+          class="mb-1 w-10 h-10 rounded-full bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center text-lg transition-colors cursor-pointer border-0"
+        >⇄</button>
 
-        <div class="selector-group">
-          <label>To</label>
+        <div class="flex flex-col gap-1 flex-1">
+          <label class="text-sm font-medium text-gray-500">To</label>
           <p-select
             [formControl]="form.controls['toCurrency']"
             [options]="currencies"
@@ -43,7 +50,7 @@
             optionValue="code"
             [filter]="true"
             filterPlaceholder="Search..."
-            class="currency-select"
+            class="w-full"
           >
             <ng-template #selectedItem let-item>
               <span>{{ item.flag }} {{ item.code }} - {{ item.name }}</span>
@@ -56,70 +63,83 @@
       </div>
 
       <!-- Amount + Result -->
-      <div class="amount-row">
-        <div class="input-group">
-          <label>Amount</label>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <div class="flex flex-col gap-1 flex-1">
+          <label class="text-sm font-medium text-gray-500">Amount</label>
           <p-inputnumber
             [formControl]="form.controls['amount']"
             mode="decimal"
             [minFractionDigits]="2"
             [maxFractionDigits]="2"
             (onInput)="convert()"
-            class="amount-input"
+            class="w-full"
           />
         </div>
 
-        <div class="result-group">
-          <label>Converted Result</label>
+        <div class="flex flex-col gap-1 flex-1">
+          <label class="text-sm font-medium text-gray-500">Converted Result</label>
           @if (isLoading()) {
             <p-skeleton height="3rem" />
           } @else {
-            <!-- Resultado convertido — antes usabas | number -->
-            <div class="result-display">
+            <div class="flex items-center gap-2 bg-blue-50 rounded-lg px-4 py-3 text-2xl font-bold text-gray-800">
               = {{ convertedResult() | currencyFormat: toCurrency.value }}
-              <span class="result-currency">{{ toCurrency.value }}</span>
+              <span class="text-sm font-medium text-blue-500 ml-1">{{ toCurrency.value }}</span>
             </div>
           }
         </div>
       </div>
 
       <!-- Rate info -->
-      <div class="rate-info">
+      <div class="flex justify-between text-sm text-gray-400">
         @if (rateLabel()) {
-          <span class="rate-label">{{ rateLabel() }}</span>
+          <span>{{ rateLabel() }}</span>
         }
         @if (lastUpdated()) {
-          <span class="updated-label">Actualizado {{ lastUpdated() | timeAgo }}</span>
+          <span>Actualizado {{ lastUpdated() | timeAgo }}</span>
         }
       </div>
 
       @if (errorMsg()) {
-        <div class="error-msg">⚠️ {{ errorMsg() }}</div>
+        <div class="text-red-500 text-sm bg-red-50 rounded-lg px-4 py-2 flex flex-row items-center gap-2">
+          <i class="pi pi-exclamation-triangle text-yellow text-xs"></i>
+          <span>{{ errorMsg() }}</span>
+        </div>
       }
     </div>
 
     <!-- Right: Market Insights -->
-    <div class="insights-card">
-      <div class="insights-header">
-        <span class="insights-title">MARKET INSIGHTS</span>
-        <span class="live-badge">● LIVE</span>
+    <div class="w-full lg:w-72 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col gap-3">
+      <div class="flex flex-row justify-between items-center">
+        <span class="text-xs font-semibold text-gray-400 tracking-widest uppercase">Market Insights</span>
+        <div class="text-xs font-medium text-green-500 flex flex-row gap-2 items-center">
+          <i class="pi pi-circle-on text-green-500 text-xs"></i> 
+          <span>LIVE</span>
+        </div>
       </div>
-      <h3>{{ form.get('toCurrency')?.value }}/{{ form.get('fromCurrency')?.value }} Last 24h</h3>
-      <p class="mock-change">+0.14% ▲</p>
+      <h3 class="text-base font-semibold text-gray-800">
+        {{ form.get('toCurrency')?.value }}/{{ form.get('fromCurrency')?.value }} Last 24h
+      </h3>
+      <p class="text-sm text-blue-500 font-medium flex flex-row items-center gap-2">+0.14% <i class="pi pi-sort-up-fill text-base"></i></p>
 
       <!-- Mock bar chart -->
-      <div class="mock-chart">
+      <div class="flex items-end gap-1 h-20">
         @for (bar of [40, 55, 45, 60, 70, 65, 80]; track $index) {
-          <div class="bar" [style.height.%]="bar"></div>
+          <div
+            class="flex-1 rounded-sm bg-blue-200 last:bg-blue-500 transition-all"
+            [style.height.%]="bar"
+          ></div>
         }
       </div>
 
       <p-button
         label="View Detailed History"
-        [outlined]="true"
+        variant="outlined"
+        severity="success"
+        [rounded]="true"
         routerLink="/history"
-        class="w-full mt-3"
+        class="w-full mt-2"
       />
     </div>
+
   </div>
 </div>

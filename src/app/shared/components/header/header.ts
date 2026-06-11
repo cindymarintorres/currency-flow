@@ -8,7 +8,7 @@ import { AvatarModule } from 'primeng/avatar';
   standalone: true,
   imports: [RouterLink, ButtonModule, AvatarModule],
   templateUrl: './header.html',
-  styleUrl: './header.scss',
+  //styleUrl: './header.css',
 })
 export class Header {
   protected readonly navLinks = [

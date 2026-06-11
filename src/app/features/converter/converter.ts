@@ -32,9 +32,8 @@ import { TimeAgoPipe } from '../../shared/pipes/time-ago.pipe';
   ],
   providers: [MessageService],
   templateUrl: './converter.html',
-  styleUrl: './converter.scss',
 })
-export class ConverterComponent implements OnInit {
+export class Converter implements OnInit {
   private historyService = inject(HistoryService);
   private exchangeRateService = inject(ExchangeRateService);
   private messageService = inject(MessageService);

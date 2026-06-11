@@ -1,9 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
-@use "tailwindcss"; //Tailwind v4 + Dart Sass moderno
-
 @layer tailwind-base, primeng, tailwind-utilities;
 
-// Tus estilos globales van aquí abajo
+@import 'tailwindcss';
+@import 'tailwindcss-primeui';
+
+@import "primeicons/primeicons.css";
+
+ /* Tus estilos globales van aquí abajo */
 * { box-sizing: border-box; }
 
 body {
