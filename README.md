@@ -25,7 +25,7 @@
 | **Framework** | 🅰️ Angular 21 | Standalone components, Signals API |
 | **Lenguaje** | 📘 TypeScript | Modo estricto (`strict: true`) |
 | **UI Library** | 🎨 PrimeNG v18+ | Tema Aura, Design Tokens, Dark Mode nativo |
-| **Estilos** | 💅 SCSS | Variables CSS + theming por tokens |
+| **Estilos** | 🎨 Tailwind CSS v4 | Utility-first, integrado con PrimeNG via `tailwindcss-primeui` |
 | **Formularios** | 📋 Reactive Forms | `FormBuilder`, validators, `CanDeactivate` |
 | **HTTP Client** | 🌐 Angular HttpClient | Interceptors, caché en memoria |
 | **Estado** | ⚡ Signals | `signal()`, `computed()`, `effect()` |
@@ -111,6 +111,92 @@ HistoryComponent         ← lista con pipes + filtros reactivos
 - ✅ Sin backend ni proxy necesario
 - ✅ 1,500 requests/mes gratis (más que suficiente para desarrollo)
 
+---
+
+## 🎨 Configuración: Tailwind v4 + PrimeNG
+ 
+> ⚠️ Esta integración requiere una configuración específica. Documentada aquí para evitar horas de debugging.
+ 
+### El problema
+ 
+Mezclar **Tailwind v4** + **PrimeNG** + **Angular** con SCSS genera conflictos de capas CSS donde el preflight de Tailwind pisa los estilos de PrimeNG o viceversa. La solución pasa por tres puntos clave.
+ 
+---
+ 
+### 1. Usar CSS puro en lugar de SCSS para estilos globales
+ 
+Angular con SCSS procesa los imports antes que PostCSS, lo que impide que Tailwind resuelva correctamente sus dependencias internas. La solución es usar `styles.css` (CSS puro).
+ 
+En `angular.json`, cambia:
+```json
+"inlineStyleLanguage": "css"
+```
+Y renombra `styles.scss` → `styles.css`.
+ 
+---
+ 
+### 2. Configurar PostCSS con `.postcssrc.json`
+ 
+Angular solo lee `.postcssrc.json` — **no** `postcss.config.mjs` ni `postcss.config.js`.
+ 
+```json
+{
+  "plugins": {
+    "@tailwindcss/postcss": {}
+  }
+}
+```
+ 
+---
+ 
+### 3. Instalar `tailwindcss-primeui` y configurar las capas
+ 
+El plugin oficial de PrimeTek gestiona la coexistencia de capas entre Tailwind y PrimeNG.
+ 
+```bash
+pnpm add tailwindcss-primeui
+```
+ 
+**`src/styles.css`:**
+```css
+@import "tailwindcss";
+@import "tailwindcss-primeui";
+@import "primeicons/primeicons.css";
+ 
+* { box-sizing: border-box; }
+ 
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f8fafc;
+  color: #1e293b;
+}
+```
+ 
+**`src/app/app.config.ts`** — el orden de capas en `cssLayer` debe ser:
+```ts
+providePrimeNG({
+  theme: {
+    preset: Aura,
+    options: {
+      darkModeSelector: '.dark-mode',
+      cssLayer: {
+        name: 'primeng',
+        order: 'theme, base, primeng',  // ← este orden es crítico
+      },
+    },
+  },
+})
+```
+ 
+### ¿Por qué este orden?
+ 
+| Capa | Prioridad | Descripción |
+|:---|:---|:---|
+| `theme` | Baja | Variables de diseño de PrimeNG |
+| `base` | Media | Reset/preflight de Tailwind |
+| `primeng` | Alta | Estilos de componentes PrimeNG — pisan el reset |
+| `utilities` | Máxima | Clases de Tailwind — pisan todo cuando se usan directamente |
+ 
 ---
 
 ## ⚙️ Prerrequisitos
