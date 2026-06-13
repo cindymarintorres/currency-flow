@@ -1,48 +1,43 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, Signal, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, tap } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { ExchangeRateResponse, CacheEntry } from '../models/exchange-rate.model';
+import { ExchangeRateResponse } from '../models/exchange-rate.model';
+import { CacheService } from './cache.service';
 
 @Injectable({ providedIn: 'root' })
 export class ExchangeRateService {
   private http = inject(HttpClient);
 
-  private cache = new Map<string, CacheEntry>();
-  private readonly CACHE_TTL = environment.cacheTimeMs; // 1 hora
+  private static readonly CACHE_TTL = environment.cacheTimeMs; // 1 hora
+  private static readonly API_BASE = environment.exchangeRateApiUrl;
+  private static readonly API_KEY = environment.exchangeRateApiKey;
+  private readonly cacheService = inject(CacheService);
 
-  isLoading = signal(false);
-  error = signal<string | null>(null);
+  private readonly _error = signal<string | null>(null);
+  readonly error: Signal<string | null> = this._error.asReadonly();
 
   getRates(baseCurrency: string): Observable<ExchangeRateResponse> {
-    const cached = this.cache.get(baseCurrency);
-    const now = Date.now();
+    const upperBase = baseCurrency.toUpperCase();
+    const cacheKey = `exchange_rates_${upperBase}`;
+    const url = `${ExchangeRateService.API_BASE}/${ExchangeRateService.API_KEY}/latest/${upperBase}`;
 
-    if (cached && now - cached.timestamp < this.CACHE_TTL) {
-      return of(cached.data);
-    }
-
-    const url = `${environment.exchangeRateApiUrl}/${environment.exchangeRateApiKey}/latest/${baseCurrency}`;
-
-    this.isLoading.set(true);
-    this.error.set(null);
-
-    return this.http.get<ExchangeRateResponse>(url).pipe(
-      tap({
-        next: (data) => {
-          this.cache.set(baseCurrency, { data, timestamp: now });
-          this.isLoading.set(false);
-        },
-        error: (err) => {
-          this.error.set('No se pudo obtener el tipo de cambio.');
-          this.isLoading.set(false);
-        }
-      })
-    );
+    return this.cacheService
+      .get(
+        cacheKey,
+        this.http.get<ExchangeRateResponse>(url),
+        ExchangeRateService.CACHE_TTL,
+      )
+      .pipe(
+        catchError((err) => {
+          this._error.set(err.message ?? 'Failed to fetch exchange rates');
+          return throwError(() => err);
+        }),
+      );
   }
 
   getRate(base: string, target: string): Observable<number | null> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       this.getRates(base).subscribe({
         next: (data) => {
           const rate = data.conversion_rates[target] ?? null;
@@ -52,12 +47,8 @@ export class ExchangeRateService {
         error: () => {
           observer.next(null);
           observer.complete();
-        }
+        },
       });
     });
-  }
-
-  clearCache(): void {
-    this.cache.clear();
   }
 }

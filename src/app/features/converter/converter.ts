@@ -15,6 +15,7 @@ import { Currency } from '../../core/models/currency.model';
 import { CURRENCIES } from '../../core/data/currencies.data';
 import { CurrencyFormatPipe } from '../../shared/pipes/currency-format.pipe';
 import { TimeAgoPipe } from '../../shared/pipes/time-ago.pipe';
+import { LoadingService } from '../../core/services/loading.service';
 
 @Component({
   selector: 'app-converter',
@@ -36,6 +37,7 @@ export class Converter implements OnInit {
   private historyService = inject(HistoryService);
   private exchangeRateService = inject(ExchangeRateService);
   private messageService = inject(MessageService);
+  private readonly loadingService = inject(LoadingService);
 
   currencies: Currency[] = CURRENCIES;
 
@@ -65,7 +67,7 @@ export class Converter implements OnInit {
   lastUpdated = signal<number | null>(null);
   marketChange = signal<number>(0.14); // ← mock, luego viene de la API
 
-  isLoading = this.exchangeRateService.isLoading;
+  readonly isLoading = this.loadingService.isLoading; // ya es Signal<boolean>
   errorMsg = this.exchangeRateService.error;
 
   rateLabel = computed(() => {

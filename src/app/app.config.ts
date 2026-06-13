@@ -11,13 +11,14 @@ import Aura from '@primeuix/themes/aura';
 
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     //provideZoneChangeDetection({ eventCoalescing: true }),
     provideZonelessChangeDetection(), //solo este, se quita el provideZoneChangeDetection
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, loadingInterceptor])),
     provideBrowserGlobalErrorListeners(),
     providePrimeNG({
       theme: {
