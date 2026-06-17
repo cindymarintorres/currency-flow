@@ -246,21 +246,10 @@ export const environment = {
   exchangeRateApiKey: 'TU_API_KEY_AQUI',       // ← de exchangerate-api.com (gratis)
   exchangeRateBaseUrl: 'https://v6.exchangerate-api.com',
   cacheTimeMs: 3600000,                          // 1 hora en milisegundos
-  fakeAuthToken: 'fake-jwt-token-currencyflow'
 };
 ```
 
-> 🔑 Obtén tu API key gratuita en [exchangerate-api.com](https://www.exchangerate-api.com/) — tarda menos de 2 minutos.
-
-### 4️⃣ Iniciar el servidor de desarrollo
-
-```bash
-ng serve
-```
-
-🚀 La aplicación estará disponible en: [http://localhost:4200](http://localhost:4200)
-
----
+> 🔑 Obtén tu API key gratuita en [exchangerate-api.com](https://www.exchangerate-api.com/)
 
 ## 🔐 Credenciales de acceso (mock)
 
@@ -269,7 +258,27 @@ La autenticación es simulada. Usa estas credenciales en la pantalla de login:
 | Campo | Valor |
 |:---|:---|
 | **Email** | `demo@currencyflow.com` |
-| **Password** | `1234` |
+| **Password** | `123456` |
+
+Genera un JWT en https://jwt.io con este payload:
+
+```json
+{
+  "sub": "1",
+  "name": "Demo User",
+  "email": "demo@currencyflow.com",
+  "admin": true,
+  "iat": 1516239022
+}
+```
+
+### 4️⃣ Iniciar el servidor de desarrollo
+
+```bash
+ng serve
+```
+
+🚀 La aplicación estará disponible en: [http://localhost:4200](http://localhost:4200)
 
 ---
 
