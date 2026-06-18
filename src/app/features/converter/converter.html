@@ -1,6 +1,6 @@
 <p-toast />
 
-<div class="flex flex-col gap-8 px-6 py-10 max-w-6xl mx-auto">
+<div class="flex flex-col gap-8 md:px-6 py-10 max-w-6xl mx-auto">
   <!-- Hero -->
   <div class="text-center">
     <h1 class="text-3xl font-bold text-[#041f6c]">Real-time Currency Conversion</h1>
@@ -15,8 +15,8 @@
       class="flex-1 bg-white rounded-2xl shadow-sm border border-sky-500 p-6 flex flex-col gap-6"
     >
       <!-- From / To selectors -->
-      <div class="flex items-end gap-4">
-        <div class="flex flex-col gap-1 flex-1">
+      <div class="flex items-center md:items-end gap-4 flex-col md:flex-row">
+        <div class="flex flex-col gap-1 flex-1 w-full">
           <label class="text-sm font-medium text-gray-500">From</label>
           <p-select
             [formControl]="form.controls['fromCurrency']"
@@ -25,7 +25,7 @@
             optionValue="code"
             [filter]="true"
             filterPlaceholder="Search..."
-            class="w-full border-sky-500"
+            class="border-sky-500"
           >
             <ng-template #selectedItem let-item>
               <span>{{ item.flag }} {{ item.code }} - {{ item.name }}</span>
@@ -35,16 +35,6 @@
             </ng-template>
           </p-select>
         </div>
-
-        <!--<p-button
-          icon="pi pi-arrow-right-arrow-left"
-          (onClick)="swap()"
-          ariaLabel="Swap currencies"
-          [outlined]="true"
-          [rounded]="true"
-          class="mb-1 w-10 h-10 rounded-full bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center text-lg transition-colors cursor-pointer border-0"
-        ></p-button> !-->
-
         <p-button
           icon="pi pi-arrow-right-arrow-left"
           (onClick)="swap()"
@@ -57,7 +47,7 @@
           }"
         />
 
-        <div class="flex flex-col gap-1 flex-1">
+        <div class="flex flex-col gap-1 flex-1 w-full">
           <label class="text-sm font-medium text-gray-500">To</label>
           <p-select
             [formControl]="form.controls['toCurrency']"
@@ -66,7 +56,7 @@
             optionValue="code"
             [filter]="true"
             filterPlaceholder="Search..."
-            class="w-full border-sky-500"
+            class="border-sky-500"
           >
             <ng-template #selectedItem let-item>
               <span>{{ item.flag }} {{ item.code }} - {{ item.name }}</span>

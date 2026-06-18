@@ -16,6 +16,7 @@ import { CURRENCIES } from '../../core/data/currencies.data';
 import { CurrencyFormatPipe } from '../../shared/pipes/currency-format.pipe';
 import { TimeAgoPipe } from '../../shared/pipes/time-ago.pipe';
 import { LoadingService } from '../../core/services/loading.service';
+import { ConverterStateService } from '../../core/services/converter-state.service';
 
 @Component({
   selector: 'app-converter',
@@ -38,19 +39,19 @@ export class Converter implements OnInit {
   private exchangeRateService = inject(ExchangeRateService);
   private messageService = inject(MessageService);
   private readonly loadingService = inject(LoadingService);
-
+  private readonly converterState = inject(ConverterStateService);
   currencies: Currency[] = CURRENCIES;
 
   // Controles tipados — sin FormBuilder, sin $any()
-  fromCurrency = new FormControl<string>('USD', {
+  fromCurrency = new FormControl<string>(this.converterState.fromCurrency(), {
     nonNullable: true,
     validators: [Validators.required],
   });
-  toCurrency = new FormControl<string>('EUR', {
+  toCurrency = new FormControl<string>(this.converterState.toCurrency(), {
     nonNullable: true,
     validators: [Validators.required],
   });
-  amount = new FormControl<number>(1000, {
+  amount = new FormControl<number>(this.converterState.amount(), {
     nonNullable: true,
     validators: [Validators.required, Validators.min(0.01)],
   });
@@ -77,6 +78,11 @@ export class Converter implements OnInit {
   });
 
   ngOnInit(): void {
+    this.form.valueChanges.subscribe(({ fromCurrency, toCurrency, amount }) => {
+      if (fromCurrency && toCurrency && amount != null) {
+        this.converterState.save(fromCurrency, toCurrency, amount);
+      }
+    });
     this.convert();
   }
 
