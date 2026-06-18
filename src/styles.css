@@ -14,3 +14,20 @@ body {
   background-color: #f8fafc;
   color: #1e293b;
 }
+
+/* styles.css */
+.btn-outline {
+  --p-button-outlined-primary-border-color: #041f6c;
+  --p-button-outlined-primary-color: #041f6c;
+  --p-button-outlined-primary-hover-background: #cfc8e0;
+  --p-button-outlined-primary-active-background: #cfc8e0;
+}
+
+.btn-solid {
+  --p-button-primary-background: #041f6c;
+  --p-button-primary-hover-background: #031557;
+  --p-button-primary-border-color: #041f6c;
+  --p-button-primary-hover-border-color: #031557;
+  --p-button-primary-color: #ffffff;
+  --p-button-primary-hover-color: #ffffff;
+}

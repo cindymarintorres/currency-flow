@@ -1,5 +1,15 @@
 .nav-active {
   color: #041f6c;
   font-weight: 600;
-  text-decoration: underline;
+}
+
+.nav-active::after {
+  content: '';
+  position: absolute;
+  bottom: 1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #041f6c;
+  border-radius: 2px;
 }
