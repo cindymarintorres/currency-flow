@@ -4,10 +4,12 @@
 @import 'tailwindcss';
 @import 'tailwindcss-primeui';
 
-@import "primeicons/primeicons.css";
+@import 'primeicons/primeicons.css';
 
- /* Tus estilos globales van aquí abajo */
-* { box-sizing: border-box; }
+/* Tus estilos globales van aquí abajo */
+* {
+  box-sizing: border-box;
+}
 
 body {
   font-family: 'Inter', sans-serif;
@@ -30,4 +32,38 @@ body {
   --p-button-primary-hover-border-color: #031557;
   --p-button-primary-color: #ffffff;
   --p-button-primary-hover-color: #ffffff;
+}
+
+.nav-item-active {
+  color: #041f6c !important;
+  font-weight: 600 !important;
+}
+
+@media (max-width: 700px) {
+  .p-menubar-button {
+    order: -1;
+  }
+  .p-menubar-start {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+@media (min-width: 700px) {
+  .nav-item-active::after {
+    content: '';
+    position: absolute;
+    bottom: 1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #041f6c;
+    border-radius: 2px;
+  }
+
+  .p-menubar-item.p-focus > .p-menubar-item-content {
+    background: transparent !important;
+    border: 0px !important;
+  }
 }

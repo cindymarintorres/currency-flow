@@ -3,13 +3,9 @@
   font-weight: 600;
 }
 
-.nav-active::after {
-  content: '';
-  position: absolute;
-  bottom: 1px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background-color: #041f6c;
-  border-radius: 2px;
+
+.p-menubar .p-menubar-root-list > .p-menubar-item > .p-menubar-item-content > .p-menubar-item-link {
+  color: var(--p-primary-color) !important;
+  font-weight: 600;
+  /* border-bottom: 2px solid var(--p-primary-color); */
 }

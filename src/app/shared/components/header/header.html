@@ -1,51 +1,36 @@
-<header
-  class="flex items-center justify-between px-8 py-3 bg-white border-b border-gray-200 shadow-sm"
->
-  <a routerLink="/converter" class="flex items-center gap-2 no-underline">
-    <i class="text-primary text-2xl">&#128177;</i>
-    <span class="text-xl font-bold text-gray-900">CurrencyFlow</span>
-  </a>
+<p-menubar [model]="menuItems()" breakpoint="700px">
+  <ng-template #start>
+    <a (click)="navigateTo('/converter')"
+       class="flex items-center gap-2 no-underline cursor-pointer mr-4">
+      <i class="text-primary text-2xl">&#128177;</i>
+      <span class="text-xl font-bold text-gray-900">CurrencyFlow</span>
+    </a>
+  </ng-template>
 
-  <nav class="flex items-center gap-1">
-    @for (link of navLinks; track link.path) {
-      @if (!link.requiresAuth || auth.isLoggedIn()) {
-        <a
-          (click)="navigateTo(link.path)"
-          [class.nav-active]="isActive(link.path)"
-          class="nav-link relative flex items-center gap-1 px-4 py-2 text-md font-medium text-gray-500 no-underline rounded-md transition-colors cursor-pointer"
-        >
-          @if (link.icon) {
-            <i [class]="link.icon"></i>
-          }
-          {{ link.label }}
-        </a>
+  <ng-template #end>
+    <div class="flex items-center gap-3">
+      @if (auth.isLoggedIn()) {
+        <p-avatar icon="pi pi-user" shape="circle" />
+        <span class="text-sm text-gray-600">{{ auth.currentUser()?.email }}</span>
+        <p-button
+          label="Logout"
+          icon="pi pi-sign-out"
+          [outlined]="true"
+          severity="primary"
+          size="small"
+          (onClick)="logout()"
+          styleClass="btn-outline" />
+      } @else {
+        <p-button
+          label="Login"
+          icon="pi pi-sign-in"
+          [outlined]="true"
+          severity="primary"
+          size="small"
+          (onClick)="navigateTo('/login')"
+          styleClass="btn-outline" />
       }
-    }
-  </nav>
-  <div class="flex items-center gap-3">
-    @if (auth.isLoggedIn()) {
-      <p-avatar icon="pi pi-user" shape="circle" />
-      <span class="text-sm text-gray-600">{{ auth.currentUser()?.email }}</span>
+    </div>
+  </ng-template>
 
-      <p-button
-        label="Logout"
-        icon="pi pi-sign-out"
-        [outlined]="true"
-        severity="primary"
-        size="small"
-        (onClick)="logout()"
-        styleClass="btn-outline"
-      />
-    } @else {
-      <p-button
-        label="Login"
-        icon="pi pi-sign-in"
-        [outlined]="true"
-        severity="primary"
-        size="small"
-        styleClass="btn-outline"
-        (onClick)="navigateTo('/login')"
-      />
-    }
-  </div>
-</header>
+</p-menubar>
