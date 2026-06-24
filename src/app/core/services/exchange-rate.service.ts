@@ -1,6 +1,6 @@
 import { Injectable, Signal, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ExchangeRateResponse } from '../models/exchange-rate.model';
 import { CacheService } from './cache.service';
@@ -23,11 +23,7 @@ export class ExchangeRateService {
     const url = `${ExchangeRateService.API_BASE}/${ExchangeRateService.API_KEY}/latest/${upperBase}`;
 
     return this.cacheService
-      .get(
-        cacheKey,
-        this.http.get<ExchangeRateResponse>(url),
-        ExchangeRateService.CACHE_TTL,
-      )
+      .get(cacheKey, this.http.get<ExchangeRateResponse>(url), ExchangeRateService.CACHE_TTL)
       .pipe(
         catchError((err) => {
           this._error.set(err.message ?? 'Failed to fetch exchange rates');
@@ -37,18 +33,6 @@ export class ExchangeRateService {
   }
 
   getRate(base: string, target: string): Observable<number | null> {
-    return new Observable((observer) => {
-      this.getRates(base).subscribe({
-        next: (data) => {
-          const rate = data.conversion_rates[target] ?? null;
-          observer.next(rate);
-          observer.complete();
-        },
-        error: () => {
-          observer.next(null);
-          observer.complete();
-        },
-      });
-    });
+    return this.getRates(base).pipe(map((data) => data.conversion_rates[target] ?? null));
   }
 }
