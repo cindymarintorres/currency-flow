@@ -34,6 +34,10 @@ body {
   --p-button-primary-hover-color: #ffffff;
 }
 
+.p-inputtext:enabled:focus {
+  --p-inputtext-focus-border-color: #041f6c;
+}
+
 .nav-item-active {
   color: #041f6c !important;
   font-weight: 600 !important;

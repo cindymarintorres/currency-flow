@@ -1,36 +1,41 @@
 <p-menubar [model]="menuItems()" breakpoint="700px">
   <ng-template #start>
-    <a (click)="navigateTo('/converter')"
-       class="flex items-center gap-2 no-underline cursor-pointer mr-4">
+    <a
+      (click)="navigateTo('/converter')"
+      class="flex items-center gap-2 no-underline cursor-pointer mr-4"
+    >
       <i class="text-primary text-2xl">&#128177;</i>
       <span class="text-xl font-bold text-gray-900">CurrencyFlow</span>
     </a>
   </ng-template>
 
   <ng-template #end>
-    <div class="flex items-center gap-3">
-      @if (auth.isLoggedIn()) {
-        <p-avatar icon="pi pi-user" shape="circle" />
-        <span class="text-sm text-gray-600">{{ auth.currentUser()?.email }}</span>
-        <p-button
-          label="Logout"
-          icon="pi pi-sign-out"
-          [outlined]="true"
-          severity="primary"
-          size="small"
-          (onClick)="logout()"
-          styleClass="btn-outline" />
-      } @else {
-        <p-button
-          label="Login"
-          icon="pi pi-sign-in"
-          [outlined]="true"
-          severity="primary"
-          size="small"
-          (onClick)="navigateTo('/login')"
-          styleClass="btn-outline" />
-      }
-    </div>
+    @if (!isMobile()) {
+      <div class="flex items-center gap-3">
+        @if (auth.isLoggedIn()) {
+          <p-avatar icon="pi pi-user" shape="circle" />
+          <span class="text-sm text-gray-600">{{ auth.currentUser()?.email }}</span>
+          <p-button
+            label="Logout"
+            icon="pi pi-sign-out"
+            [outlined]="true"
+            severity="primary"
+            size="small"
+            (onClick)="logout()"
+            styleClass="btn-outline"
+          />
+        } @else if (currentUrl() !== '/login') {
+          <p-button
+            label="Login"
+            icon="pi pi-sign-in"
+            [outlined]="true"
+            severity="primary"
+            size="small"
+            (onClick)="navigateTo('/login')"
+            styleClass="btn-outline"
+          />
+        }
+      </div>
+    }
   </ng-template>
-
 </p-menubar>

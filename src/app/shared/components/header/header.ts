@@ -7,7 +7,7 @@ import { NavigationOverlayService } from '../../../core/services/navigation-over
 import { MenuItem } from 'primeng/api';
 import { MenubarModule } from 'primeng/menubar';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { filter, map, startWith } from 'rxjs';
+import { filter, fromEvent, map, startWith } from 'rxjs';
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -20,7 +20,7 @@ export class Header {
   protected readonly router = inject(Router);
   private readonly overlay = inject(NavigationOverlayService);
 
-  private readonly currentUrl = toSignal(
+  protected readonly currentUrl = toSignal(
     this.router.events.pipe(
       filter((e) => e instanceof NavigationEnd),
       map(() => this.router.url.split('?')[0]),
@@ -29,7 +29,17 @@ export class Header {
     { initialValue: this.router.url.split('?')[0] },
   );
 
-  protected readonly menuItems = computed<MenuItem[]>(() => {
+  private readonly windowWidth = toSignal(
+    fromEvent(window, 'resize').pipe(
+      map(() => window.innerWidth),
+      startWith(window.innerWidth),
+    ),
+    { initialValue: window.innerWidth },
+  );
+
+  protected readonly isMobile = computed(() => this.windowWidth() < 700);
+
+  /*protected readonly menuItems = computed<MenuItem[]>(() => {
     const url = this.currentUrl();
     const loggedIn = this.auth.isLoggedIn();
 
@@ -47,17 +57,69 @@ export class Header {
         linkClass: url === link.path ? 'nav-item-active' : '',
         command: () => this.navigateTo(link.path),
       }));
+  });*/
+
+  protected readonly menuItems = computed<MenuItem[]>(() => {
+    const url = this.currentUrl();
+    const loggedIn = this.auth.isLoggedIn();
+    const mobile = this.isMobile();
+
+    const links = [
+      { label: 'Converter', path: '/converter', requiresAuth: false },
+      { label: 'History', path: '/history', requiresAuth: true },
+      { label: 'Favorites', path: '/favorites', requiresAuth: true },
+      { label: 'Search', path: '/search', requiresAuth: true },
+    ] as const;
+
+    const navItems = links
+      .filter((link) => !link.requiresAuth || loggedIn)
+      .map((link) => ({
+        label: link.label,
+        linkClass: url === link.path ? 'nav-item-active' : '',
+        command: () => this.navigateTo(link.path),
+      }));
+
+    if (!mobile) return navItems;
+
+    // En móvil: auth items entran al model → aparecen en el hamburger
+    if (loggedIn) {
+      return [
+        ...navItems,
+        { separator: true },
+        {
+          label: this.auth.currentUser()?.email ?? '',
+          icon: 'pi pi-user',
+          disabled: true,
+        },
+        {
+          label: 'Logout',
+          icon: 'pi pi-sign-out',
+          command: () => this.logout(),
+        },
+      ];
+    }
+
+    if (url !== '/login') {
+      return [
+        ...navItems,
+        { separator: true },
+        {
+          label: 'Login',
+          icon: 'pi pi-sign-in',
+          command: () => this.navigateTo('/login'),
+        },
+      ];
+    }
+
+    return navItems;
   });
 
   protected navigateTo(path: string): void {
-    this.overlay.show();
-    const minDelay = new Promise<void>((resolve) => setTimeout(resolve, 800));
-    const navigation = this.router.navigate([path]);
-    Promise.all([minDelay, navigation]).then(() => this.overlay.hide());
+    this.overlay.navigateWithOverlay(() => this.router.navigate([path]));
   }
 
   protected logout(): void {
     this.auth.logout();
-    this.router.navigate(['/converter']);
+    this.overlay.navigateWithOverlay(() => this.router.navigate(['/converter']));
   }
 }
