@@ -12,4 +12,11 @@ export class NavigationOverlayService {
   hide(): void {
     this._isVisible.set(false);
   }
+
+  async navigateWithOverlay(navigationFn: () => Promise<unknown>): Promise<void> {
+    this.show();
+    const minDelay = new Promise<void>((resolve) => setTimeout(resolve, 800));
+    await Promise.all([minDelay, navigationFn()]);
+    this.hide();
+  }
 }
