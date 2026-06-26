@@ -37,7 +37,7 @@ export class Header {
     { initialValue: window.innerWidth },
   );
 
-  protected readonly isMobile = computed(() => this.windowWidth() < 700);
+  protected readonly isMobile = computed(() => this.windowWidth() < 901);
 
   /*protected readonly menuItems = computed<MenuItem[]>(() => {
     const url = this.currentUrl();
