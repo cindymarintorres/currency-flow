@@ -20,6 +20,7 @@
           <label class="text-sm font-medium text-gray-500">From</label>
           <p-select
             [formControl]="form.controls['fromCurrency']"
+            (onChange)="onCurrencyChange()"
             [options]="currencies"
             optionLabel="name"
             optionValue="code"
@@ -51,6 +52,7 @@
           <label class="text-sm font-medium text-gray-500">To</label>
           <p-select
             [formControl]="form.controls['toCurrency']"
+            (onChange)="onCurrencyChange()"
             [options]="currencies"
             optionLabel="name"
             optionValue="code"
@@ -108,6 +110,21 @@
         }
       </div>
 
+      @if (loggedIn) {
+        <!-- Button Save to History -->
+      <div class="flex justify-end">
+        <p-button
+          label="Save to History"
+          icon="pi pi-bookmark"
+          severity="primary"
+          [outlined]="true"
+          [disabled]="!convertedResult() || alreadySaved()"
+          (onClick)="saveToHistory()"
+          styleClass="btn-outline"
+        />
+      </div>
+      }
+   
       @if (errorMsg()) {
         <div
           class="text-red-500 text-sm bg-red-50 rounded-lg px-4 py-2 flex flex-row items-center gap-2"
@@ -143,11 +160,16 @@
         +0.14% <i class="pi pi-sort-up-fill text-base"></i>
       </p>!-->
 
-      <p class="text-sm font-medium flex flex-row items-center gap-2"
-   [class]="marketChange() >= 0 ? 'text-green-500' : 'text-red-500'">
-  {{ marketChange() >= 0 ? '+' : '' }}{{ marketChange() }}%
-  <i [class]="marketChange() >= 0 ? 'pi pi-sort-up-fill' : 'pi pi-sort-down-fill'" class="text-base"></i>
-</p>
+      <p
+        class="text-sm font-medium flex flex-row items-center gap-2"
+        [class]="marketChange() >= 0 ? 'text-green-500' : 'text-red-500'"
+      >
+        {{ marketChange() >= 0 ? '+' : '' }}{{ marketChange() }}%
+        <i
+          [class]="marketChange() >= 0 ? 'pi pi-sort-up-fill' : 'pi pi-sort-down-fill'"
+          class="text-base"
+        ></i>
+      </p>
 
       <!-- Mock bar chart -->
       <div class="flex items-end gap-1 h-20">
@@ -159,14 +181,14 @@
         }
       </div>
 
-      
-
       <p-button
         label="View Detailed History"
         variant="outlined"
         severity="info"
         routerLink="/history"
-        {# [fluid]="true" #}
+        {#
+        [fluid]="true"
+        #}
         styleClass="w-full mt-2"
       />
     </div>
