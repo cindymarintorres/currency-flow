@@ -32,8 +32,7 @@ function clampPage(page: number, max: number): number {
     TimeAgoPipe,
   ],
   providers: [MessageService],
-  templateUrl: './history.html',
-  styleUrl: './history.css',
+  templateUrl: './history.html'
 })
 export class History {
   // ── Dependencias ─────────────────────────────────────────────────────

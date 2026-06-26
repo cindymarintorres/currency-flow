@@ -24,8 +24,7 @@ import { NavigationOverlayService } from '../../../core/services/navigation-over
     IconFieldModule,
     InputIconModule,
   ],
-  templateUrl: './login.html',
-  styleUrl: './login.css',
+  templateUrl: './login.html'
 })
 export class Login {
   private readonly authService = inject(AuthService);
