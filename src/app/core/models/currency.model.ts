@@ -9,3 +9,8 @@ export interface CurrencyPair {
   from: string;
   to: string;
 }
+
+export interface CurrencyOption {
+  label: string;
+  value: string;
+}
