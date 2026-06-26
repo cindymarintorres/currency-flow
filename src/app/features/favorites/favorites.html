@@ -1,1 +1,167 @@
-<p>favorites works!</p>
+<p-toast />
+
+<div class="md:px-6 max-w-6xl mx-auto">
+
+  <!-- ── Header ───────────────────────────────────────────────────────── -->
+  <div class="flex flex-col sm:flex-row justify-between items-center mb-8">
+    <div class="">
+      <h1 class="text-3xl font-bold text-blue-900">Favorites</h1>
+      <p class="text-slate-500 mt-1">Track your most used currency pairs in real-time.</p>
+      <p class="text-sm text-muted-color mt-1 mb-0">
+        {{ favorites().length }}
+        {{ favorites().length === 1 ? 'par guardado' : 'pares guardados' }}
+      </p>
+    </div>
+    <p-button
+      label="Add pair"
+      icon="pi pi-plus"
+      styleClass="btn-solid mt-5 sm:mt-0"
+      (onClick)="openAddDialog()"
+    />
+  </div>
+
+  <!-- ── Empty state ───────────────────────────────────────────────────── -->
+  @if (isEmpty()) {
+    <div class="flex flex-col items-center justify-center py-24 gap-4 text-center">
+      <i class="pi pi-star text-7xl" style="color: var(--p-surface-300)"></i>
+      <span class="text-xl font-medium">No hay favoritos aún</span>
+      <span class="text-sm text-muted-color">
+        Agrega pares de divisas para acceder rápidamente a sus tasas de cambio
+      </span>
+      <p-button
+        label="Add first pair"
+        icon="pi pi-plus"
+        severity="primary"
+        [outlined]="true"
+        styleClass="btn-outline"
+        (onClick)="openAddDialog()"
+      />
+    </div>
+  }
+
+  <!-- ── Favorites grid ────────────────────────────────────────────────── -->
+  @if (!isEmpty()) {
+    <div class="favorites-grid">
+      @for (pair of favorites(); track pair.base + '-' + pair.target) {
+        <p-card>
+          <div class="flex flex-col gap-4">
+
+            <!-- Currency pair -->
+            <div class="flex items-center gap-2">
+              <span class="text-2xl font-bold">{{ pair.base }}</span>
+              <i class="pi pi-arrow-right text-primary text-xl"></i>
+              <span class="text-2xl font-bold">{{ pair.target }}</span>
+            </div>
+
+            <!-- Exchange rate (reactive a _rates signal) -->
+            <div class="min-h-6">
+              @if (loading() && getRate(pair.base, pair.target) === null) {
+                <div class="flex items-center gap-2">
+                  <p-progressspinner
+                    [style]="{ width: '1.25rem', height: '1.25rem' }"
+                    strokeWidth="4"
+                  />
+                  <span class="text-sm text-muted-color">Cargando tasa...</span>
+                </div>
+              } @else if (getRate(pair.base, pair.target) !== null) {
+                <span class="text-sm text-muted-color">
+                  1 {{ pair.base }} =
+                  <strong>{{ formatRate(getRate(pair.base, pair.target)!) }}</strong>
+                  {{ pair.target }}
+                </span>
+              }
+            </div>
+
+            <!-- Actions -->
+            <div class="flex gap-2 justify-end">
+              <p-button
+                label="Converter"
+                icon="pi pi-calculator"
+                size="small"
+                (onClick)="navigateToConverter(pair)"
+              />
+              <p-button
+                icon="pi pi-trash"
+                severity="danger"
+                [outlined]="true"
+                size="small"
+                pTooltip="Delete favorite"
+                tooltipPosition="top"
+                (onClick)="removeFavorite(pair)"
+              />
+            </div>
+
+          </div>
+        </p-card>
+      }
+    </div>
+  }
+
+</div>
+
+<!-- ── Add pair dialog ─────────────────────────────────────────────────── -->
+<p-dialog
+  header="Agregar par de divisas"
+  [visible]="dialogVisible()"
+  (visibleChange)="onDialogVisibleChange($event)"
+  [modal]="true"
+  [style]="{ width: '25rem'}"
+  [draggable]="false"
+  [resizable]="false"
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+>
+  <div class="flex flex-col gap-4 py-2">
+
+    <!-- Base currency -->
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium">Moneda base</label>
+      <p-select
+        [options]="allCurrencyOptions()"
+        optionLabel="label"
+        optionValue="value"
+        [filter]="true"
+        filterBy="value"
+        [formControl]="baseControl"
+        placeholder="Ej. USD"
+        class="w-full"
+        appendTo="body"
+      />
+    </div>
+
+    <!-- Target currency: filtra la base seleccionada -->
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium">Moneda destino</label>
+      <p-select
+        [options]="targetCurrencyOptions()"
+        optionLabel="label"
+        optionValue="value"
+        [filter]="true"
+        filterBy="value"
+        [formControl]="targetControl"
+        placeholder="Ej. EUR"
+        class="w-full"
+        [disabled]="!selectedBaseSignal()"
+        appendTo="body"
+      />
+    </div>
+
+  </div>
+
+  <ng-template #footer>
+    <div class="flex justify-end gap-2">
+      <p-button
+        label="Cancel"
+        styleClass="btn-outline"
+        [outlined]="true"
+        icon="pi pi-times"
+        (onClick)="closeDialog()"
+      />
+      <p-button
+        label="Add"
+        styleClass="btn-solid"
+        icon="pi pi-check"
+        (onClick)="confirmAdd()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>
