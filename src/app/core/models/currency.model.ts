@@ -3,6 +3,8 @@ export interface Currency {
   name: string;
   symbol: string;
   flag: string; // emoji flag
+  tag?: string; // 'REFERENCE CURRENCY', 'POPULAR CHOICE', etc.
+  rate?: number | null;  // null = USD base (es la referencia)
 }
 
 export interface CurrencyPair {
