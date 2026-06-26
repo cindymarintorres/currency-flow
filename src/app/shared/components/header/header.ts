@@ -8,6 +8,7 @@ import { MenuItem } from 'primeng/api';
 import { MenubarModule } from 'primeng/menubar';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, fromEvent, map, startWith } from 'rxjs';
+import { ThemeService } from '../../../core/services/theme.service';
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -19,6 +20,7 @@ export class Header {
   protected readonly auth = inject(AuthService);
   protected readonly router = inject(Router);
   private readonly overlay = inject(NavigationOverlayService);
+  protected readonly theme = inject(ThemeService);
 
   protected readonly currentUrl = toSignal(
     this.router.events.pipe(

@@ -10,8 +10,15 @@
   </ng-template>
 
   <ng-template #end>
-    @if (!isMobile()) {
-      <div class="flex items-center gap-3">
+    <div class="flex items-center gap-3">
+      <p-button
+        [icon]="theme.isDark() ? 'pi pi-sun' : 'pi pi-moon'"
+        [rounded]="true"
+        [text]="true"
+        severity="secondary"
+        (onClick)="theme.toggle()"
+      />
+      @if (!isMobile()) {
         @if (auth.isLoggedIn()) {
           <p-avatar icon="pi pi-user" shape="circle" />
           <span class="text-sm text-gray-600">{{ auth.currentUser()?.email }}</span>
@@ -35,7 +42,7 @@
             styleClass="btn-outline"
           />
         }
-      </div>
-    }
+      }
+    </div>
   </ng-template>
 </p-menubar>
